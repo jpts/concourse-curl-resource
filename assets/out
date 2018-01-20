@@ -21,7 +21,7 @@ payload=$(mktemp $TMPDIR/concoure-curl-resource-request.XXXXXX)
 cat > $payload <&0
 
 url=$(jq -r '.source.url // ""' < $payload)
-filename=$(jq -r '.source.filename // ""' < $payload)
+path=$(jq -r '.params.path // ""' < $payload)
 skip_ssl_verification=$(jq -r '.source.skip_ssl_verification // ""' < $payload)
 username=$(jq -r '.source.username // ""' < $payload)
 password=$(jq -r '.source.password // ""' < $payload)
@@ -32,8 +32,8 @@ if [ -z "$url" ]; then
   exit 1
 fi
 
-if [ -z "$filename" ]; then
-  echo "invalid payload (missing filename)"
+if [ -z "$path" ]; then
+  echo "invalid payload (missing path)"
   exit 1
 fi
 
@@ -46,7 +46,7 @@ args_security=
 trueValue="true"
 [ -n "$skip_ssl_verification" ] && [ "${skip_ssl_verification,,}" = "${trueValue,,}" ] && args_security="$args_security -k";
 
-curl "-X" "$method" "--upload-file" "$filename" $args_security "$args_url"
+curl "-X" "$method" "--upload-file" "$path" $args_security "$args_url"
 
 final_url=$(echo "$args_security" " $args_url")
 version=$(check_version "$final_url")
