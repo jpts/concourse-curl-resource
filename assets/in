@@ -32,7 +32,7 @@ if [ -z "$url" ]; then
 fi
 
 if [ -z "$filename" ]; then
-  filename="-J"
+  filename="-JO"
 else
   filename="-o $filename"
 fi
